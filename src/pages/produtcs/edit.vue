@@ -194,9 +194,7 @@ export default {
               type: 'positive',
               message: 'Cadastro realizado com sucesso!'
             })
-            setInterval(() => {
-              window.location.reload()
-            }, 2000)
+            this.$emit('refresh')
           })
           .catch(this.AxiosCatchMixin)
       }

@@ -7,6 +7,7 @@
       <edit-product
         v-if="modal"
         :productId="productId"
+        @refresh="Refresh"
       />
     </q-modal>
     <q-card class="col-12 bg-white">
@@ -149,6 +150,7 @@ export default {
   },
   methods: {
     Load () {
+      console.log('Load')
       this.$axios.get('/Products')
         .then(Res => { this.Tabela.tableData = Res.data })
         .catch(this.AxiosCatch)
@@ -156,6 +158,10 @@ export default {
     OpenModal (id) {
       this.modal = true
       this.productId = id || 0
+    },
+    Refresh () {
+      this.modal = false
+      this.Load()
     }
   }
 }
