@@ -1,6 +1,9 @@
 <template>
   <q-page class="row justify-center items-start q-pa-md">
-    <q-modal v-model="modal">
+    <q-modal
+      v-model="modal"
+      minimized
+    >
       <edit-product
         v-if="modal"
         :productId="productId"
@@ -14,7 +17,6 @@
           slot="right"
         >
           <q-btn
-            :disable="!$acl.check('isAdmin')"
             class="no-shadow q-mx-md"
             round
             dense
@@ -32,7 +34,6 @@
             v-model="searchFilter"
             inverted-light
             color="white"
-            autofocus
             clearable
             :class="this.$q.platform.is.mobile ? 'search-box-m' : 'search-box-web'"
             rounded
@@ -91,7 +92,6 @@
               :props="props"
             >
               <q-btn
-                :disable="!$acl.check('isAdmin')"
                 class="no-shadow q-mx-md"
                 round
                 dense
@@ -117,10 +117,10 @@
 
 <script>
 import { AxiosCatchMixin } from '../../mixins/AxiosCatch'
-// import editProduct from './edit'
+import editProduct from './edit'
 export default {
   name: 'ListInventory',
-  // components: { editProduct },
+  components: { editProduct },
   mixins: [AxiosCatchMixin],
   data () {
     return {
@@ -140,7 +140,8 @@ export default {
         ]
       },
       searchFilter: '',
-      modal: false
+      modal: false,
+      productId: 0
     }
   },
   mounted () {
