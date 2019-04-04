@@ -1,12 +1,12 @@
 <template>
   <div class="row flex-center q-pa-none">
-    <q-card class="fit col-xl-6 col-lg-9 col-md-12 col-sm-12 col-xs-12">
+    <q-card>
       <q-card-title class="bg-pink-11 text-white q-py-sm">
         {{isNotNew ? 'Edit' : 'New'}} Product
       </q-card-title>
       <q-card-main class="row q-mx-sm">
         <q-field
-          class="col-6 q-px-md q-pt-lg"
+          class="col-12 q-px-md q-pt-lg"
           label="Model"
           label-width="12"
           :error="$v.form.model.$error"
@@ -18,45 +18,7 @@
           />
         </q-field>
         <q-field
-          class="col-6 q-px-md q-pt-lg"
-          label="Size"
-          label-width="12"
-          :error="$v.form.sizes.$error"
-          error-label="Campo obrigatório."
-        >
-          <q-input
-            v-model="form.sizes"
-            color="light"
-          />
-        </q-field>
-        <q-field
-          class="col-6 q-px-md q-pt-lg"
-          label="Stock"
-          label-width="12"
-          :error="$v.form.availableQty.$error"
-          error-label="Campo obrigatório."
-        >
-          <q-input
-            v-model="form.availableQty"
-            type="number"
-            color="light"
-          />
-        </q-field>
-        <q-field
-          class="col-6 q-px-md q-pt-lg"
-          label="Purchased"
-          label-width="12"
-          :error="$v.form.purchasedQty.$error"
-          error-label="Valor deve ser inteiro"
-        >
-          <q-input
-            v-model="form.purchasedQty"
-            type="number"
-            color="light"
-          />
-        </q-field>
-        <q-field
-          class="col-12 q-px-md q-pt-lg"
+          class="col-12 q-px-md"
           label="Description"
           label-width="12"
           :error="$v.form.description.$error"
@@ -68,13 +30,38 @@
             color="light"
           />
         </q-field>
+        <q-field
+          class="col-6 q-px-md"
+          label="Size"
+          label-width="12"
+          :error="$v.form.sizes.$error"
+          error-label="Campo obrigatório."
+        >
+          <q-input
+            v-model="form.sizes"
+            color="light"
+          />
+        </q-field>
+        <q-field
+          class="col-6 q-px-md"
+          label="Stock"
+          label-width="12"
+          :error="$v.form.availableQty.$error"
+          error-label="Campo obrigatório."
+        >
+          <q-input
+            v-model="form.availableQty"
+            type="number"
+            color="light"
+          />
+        </q-field>
       </q-card-main>
       <q-card-actions
         class="q-mx-md q-mb-lg"
         align="center"
       >
         <q-btn
-          class="q-mx-md"
+          class="q-pa-md"
           label="Voltar"
           icon="arrow_back_ios"
           color="teal-11"
@@ -84,7 +71,7 @@
           v-close-overlay
         />
         <q-btn
-          class="q-mx-md"
+          class="q-pa-md"
           label="Salvar"
           icon="save"
           color="teal-11"
@@ -114,8 +101,7 @@ export default {
         model: null,
         description: null,
         sizes: null,
-        availableQty: 0,
-        purchasedQty: 0
+        availableQty: 0
       },
       lstRoles: []
     }
@@ -139,9 +125,6 @@ export default {
         },
         availableQty: {
           required,
-          integer
-        },
-        purchasedQty: {
           integer
         }
       }
@@ -177,15 +160,13 @@ export default {
             model: form.model,
             description: form.description,
             sizes: form.sizes,
-            availableQty: form.availableQty,
-            purchasedQty: form.purchasedQty
+            availableQty: form.availableQty
           })
           : this.$axios.post(`/Products`, {
             model: form.model,
             description: form.description,
             sizes: form.sizes,
-            availableQty: form.availableQty,
-            purchasedQty: form.purchasedQty
+            availableQty: form.availableQty
           })
 
         formSave

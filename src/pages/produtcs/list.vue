@@ -2,6 +2,7 @@
   <q-page class="row justify-center items-start q-pa-md">
     <q-modal
       v-model="modal"
+      :content-css="{maxWidth: '40vw', maxHeight: '80vh'}"
       minimized
     >
       <edit-product
@@ -26,6 +27,7 @@
             @click="OpenModal(0)"
           >
             <q-tooltip
+              v-if="!this.$q.platform.is.mobile"
               anchor="bottom middle"
               self="top middle"
               :offset="[0, 8]"
@@ -49,6 +51,7 @@
           :data="Tabela.tableData"
           :columns="Tabela.columns"
           :filter="searchFilter"
+          :loading="Tabela.loading"
           row-key="id"
         >
           <q-tr
@@ -89,23 +92,51 @@
               </div>
             </q-td>
             <q-td
+              key="purchasedQty"
+              :props="props"
+            >
+              <div class="row items-center justify-start no-wrap">
+                <span class="uppercase text-weight-medium">{{props.row.purchasedQty}}</span>
+              </div>
+            </q-td>
+            <q-td
               key="id"
               :props="props"
             >
               <q-btn
-                class="no-shadow q-mx-md"
+                class="no-shadow q-mx-xs"
                 round
                 dense
-                color="dark"
+                flat
+                color="info"
                 icon="edit"
                 @click="OpenModal(props.row.id)"
               >
                 <q-tooltip
+                  v-if="!$q.platform.is.mobile"
                   anchor="bottom middle"
                   self="top middle"
                   :offset="[0, 8]"
                 >
                   Edit product
+                </q-tooltip>
+              </q-btn>
+              <q-btn
+                class="no-shadow q-mx-xs"
+                round
+                dense
+                flat
+                color="red"
+                icon="delete"
+                @click="Delete(props.row)"
+              >
+                <q-tooltip
+                  v-if="!$q.platform.is.mobile"
+                  anchor="bottom middle"
+                  self="top middle"
+                  :offset="[0, 8]"
+                >
+                  Delete product
                 </q-tooltip>
               </q-btn>
             </q-td>
@@ -133,11 +164,12 @@ export default {
         },
         tableData: [],
         columns: [
-          { field: 'model', name: 'model', label: 'Model', align: 'left', style: 'width: 20%', sortable: true },
-          { field: 'description', name: 'description', label: 'Description', align: 'left', style: 'width: 25%', sortable: true },
-          { field: 'sizes', name: 'sizes', label: 'Size', align: 'left', style: 'width: 25%', sortable: true },
-          { field: 'availableQty', name: 'availableQty', label: 'Stock', align: 'left', style: 'width: 20%', sortable: true },
-          { field: 'id', name: 'id', label: 'Edit', align: 'left', style: 'width: 10%' }
+          { field: 'model', name: 'model', label: 'Model', align: 'left', style: 'width: 30%', sortable: true },
+          { field: 'description', name: 'description', label: 'Description', align: 'left', style: 'width: 30%', sortable: true },
+          { field: 'sizes', name: 'sizes', label: 'Size', align: 'left', style: 'width: 10%', sortable: true },
+          { field: 'availableQty', name: 'availableQty', label: 'Stock', align: 'left', style: 'width: 10%', sortable: true },
+          { field: 'purchasedQty', name: 'purchasedQty', label: 'Purchased', align: 'left', style: 'width: 10%', sortable: true },
+          { field: 'id', name: 'id', label: 'Actions', align: 'left', style: 'width: 10%' }
         ]
       },
       searchFilter: '',
@@ -150,10 +182,21 @@ export default {
   },
   methods: {
     Load () {
-      console.log('Load')
-      this.$axios.get('/Products')
-        .then(Res => { this.Tabela.tableData = Res.data })
-        .catch(this.AxiosCatch)
+      this.$axios.get('/Products', {
+        params: {
+          filter: {
+            where: { isActive: true }
+          }
+        }
+      })
+        .then(Res => {
+          this.Tabela.tableData = Res.data
+          this.Tabela.loading = false
+        })
+        .catch(Err => {
+          this.Tabela.loading = false
+          this.AxiosCatch(Err)
+        })
     },
     OpenModal (id) {
       this.modal = true
@@ -162,6 +205,23 @@ export default {
     Refresh () {
       this.modal = false
       this.Load()
+    },
+    Delete (product) {
+      this.$q.dialog({
+        title: 'Confirmar exclusão',
+        message: 'Tem certeza que deseja excluir o(s) produto(s) selecionada(s)?',
+        ok: 'Sim',
+        cancel: 'Cancelar'
+      })
+        .then(() => {
+          this.$axios.patch(`/Products/${product.id}`, { isActive: false })
+            .then(Res => {
+              this.Tabela.loading = true
+              this.Tabela.tableData = []
+              this.Load()
+            })
+            .catch(this.AxiosCatch)
+        })
     }
   }
 }
