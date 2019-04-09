@@ -70,7 +70,7 @@
               :props="props"
             >
               <div class="row items-center justify-start no-wrap">
-                <span class="uppercase text-weight-medium">{{props.row.model}}</span>
+                <span class="text-weight-medium">{{props.row.model}}</span>
               </div>
             </q-td>
             <q-td
@@ -78,7 +78,7 @@
               :props="props"
             >
               <div class="row items-center justify-start no-wrap">
-                <span class="uppercase text-weight-medium">{{props.row.description}}</span>
+                <span class="text-weight-medium">{{props.row.description}}</span>
               </div>
             </q-td>
             <q-td
@@ -86,7 +86,7 @@
               :props="props"
             >
               <div class="row items-center justify-start no-wrap">
-                <span class="uppercase text-weight-medium">{{props.row.sizes}}</span>
+                <span class="text-weight-medium">{{props.row.sizes}}</span>
               </div>
             </q-td>
             <q-td
@@ -94,7 +94,7 @@
               :props="props"
             >
               <div class="row items-center justify-start no-wrap">
-                <span class="uppercase text-weight-medium">{{props.row.availableQty}}</span>
+                <span class="text-weight-medium">{{props.row.availableQty}}</span>
               </div>
             </q-td>
             <q-td
@@ -102,7 +102,15 @@
               :props="props"
             >
               <div class="row items-center justify-start no-wrap">
-                <span class="uppercase text-weight-medium">{{props.row.purchasedQty}}</span>
+                <span class="text-weight-medium">{{props.row.purchasedQty}}</span>
+              </div>
+            </q-td>
+            <q-td
+              key="timeToZeroed"
+              :props="props"
+            >
+              <div class="row items-center justify-start no-wrap">
+                <span class="text-weight-medium">{{props.row.timeToZeroed}} min.</span>
               </div>
             </q-td>
             <q-td
@@ -189,11 +197,12 @@ export default {
         },
         tableData: [],
         columns: [
-          { field: 'model', name: 'model', label: 'Model', align: 'left', style: 'width: 30%', sortable: true },
+          { field: 'model', name: 'model', label: 'Model', align: 'left', style: 'width: 20%', sortable: true },
           { field: 'description', name: 'description', label: 'Description', align: 'left', style: 'width: 30%', sortable: true },
           { field: 'sizes', name: 'sizes', label: 'Size', align: 'left', style: 'width: 10%', sortable: true },
           { field: 'availableQty', name: 'availableQty', label: 'Stock', align: 'left', style: 'width: 10%', sortable: true },
           { field: 'purchasedQty', name: 'purchasedQty', label: 'Purchased', align: 'left', style: 'width: 10%', sortable: true },
+          { field: 'timeToZeroed', name: 'timeToZeroed', label: 'Time To Zeroed', align: 'left', style: 'width: 10%', sortable: true },
           { field: 'id', name: 'id', label: 'Actions', align: 'left', style: 'width: 10%' }
         ]
       },

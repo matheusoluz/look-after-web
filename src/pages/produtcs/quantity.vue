@@ -5,12 +5,12 @@
         Set Quantity
       </q-card-title>
       <q-card-main class="row q-mx-sm">
-        {{$v.form.purchasedQty.$params.maxValue.max}}
         <q-field
           class="col-12 q-px-md"
           label="Quantity"
           label-width="12"
           :error="$v.form.purchasedQty.$error"
+          :helper="`There are ${product.availableQty} diapers available`"
         >
           <q-input
             v-model="form.purchasedQty"
