@@ -49,13 +49,13 @@
             />
             <q-item-main label="Inventory" />
           </q-item>
-          <q-item to="/login/logout">
+          <!-- <q-item to="/login/logout">
             <q-item-side
               icon="mdi-logout-variant"
               color="pink-11"
             />
             <q-item-main label="Log out" />
-          </q-item>
+          </q-item> -->
         </q-list>
       </q-scroll-area>
     </q-layout-drawer>
