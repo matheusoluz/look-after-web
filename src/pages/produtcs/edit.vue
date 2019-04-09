@@ -102,8 +102,7 @@ export default {
         description: null,
         sizes: null,
         availableQty: 0
-      },
-      lstRoles: []
+      }
     }
   },
   validations () {
