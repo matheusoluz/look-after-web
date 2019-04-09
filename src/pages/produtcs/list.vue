@@ -1,13 +1,19 @@
 <template>
   <q-page class="row justify-center items-start q-pa-md">
     <q-modal
-      v-model="modal"
+      :value="Boolean(modal)"
       :content-css="{maxWidth: '40vw', maxHeight: '80vh'}"
       minimized
+      @hide="() => modal = 0"
     >
       <edit-product
-        v-if="modal"
-        :productId="productId"
+        v-if="modal === 1"
+        :productId="product.id"
+        @refresh="Refresh"
+      />
+      <edit-quantity
+        v-if="modal === 2"
+        :product="product"
         @refresh="Refresh"
       />
     </q-modal>
@@ -24,7 +30,7 @@
             dense
             color="dark"
             icon="add"
-            @click="OpenModal(0)"
+            @click="OpenModal({id: 0}, 1)"
           >
             <q-tooltip
               v-if="!this.$q.platform.is.mobile"
@@ -110,7 +116,7 @@
                 flat
                 color="info"
                 icon="edit"
-                @click="OpenModal(props.row.id)"
+                @click="OpenModal(props.row, 1)"
               >
                 <q-tooltip
                   v-if="!$q.platform.is.mobile"
@@ -128,7 +134,7 @@
                 flat
                 color="red"
                 icon="delete"
-                @click="Delete(props.row)"
+                @click="Delete(props.row.id)"
               >
                 <q-tooltip
                   v-if="!$q.platform.is.mobile"
@@ -137,6 +143,24 @@
                   :offset="[0, 8]"
                 >
                   Delete product
+                </q-tooltip>
+              </q-btn>
+              <q-btn
+                class="no-shadow q-mx-xs"
+                round
+                dense
+                flat
+                color="dark"
+                icon="add_shopping_cart"
+                @click="OpenModal(props.row, 2)"
+              >
+                <q-tooltip
+                  v-if="!$q.platform.is.mobile"
+                  anchor="bottom middle"
+                  self="top middle"
+                  :offset="[0, 8]"
+                >
+                  Purchase
                 </q-tooltip>
               </q-btn>
             </q-td>
@@ -150,9 +174,10 @@
 <script>
 import { AxiosCatchMixin } from '../../mixins/AxiosCatch'
 import editProduct from './edit'
+import editQuantity from './quantity'
 export default {
   name: 'ListInventory',
-  components: { editProduct },
+  components: { editProduct, editQuantity },
   mixins: [AxiosCatchMixin],
   data () {
     return {
@@ -174,7 +199,7 @@ export default {
       },
       searchFilter: '',
       modal: false,
-      productId: 0
+      product: { id: 0 }
     }
   },
   mounted () {
@@ -198,15 +223,15 @@ export default {
           this.AxiosCatch(Err)
         })
     },
-    OpenModal (id) {
-      this.modal = true
-      this.productId = id || 0
+    OpenModal (product, typeModal) {
+      this.modal = typeModal
+      this.product = product
     },
     Refresh () {
       this.modal = false
       this.Load()
     },
-    Delete (product) {
+    Delete (id) {
       this.$q.dialog({
         title: 'Confirmar exclusão',
         message: 'Tem certeza que deseja excluir o(s) produto(s) selecionada(s)?',
@@ -214,7 +239,7 @@ export default {
         cancel: 'Cancelar'
       })
         .then(() => {
-          this.$axios.patch(`/Products/${product.id}`, { isActive: false })
+          this.$axios.patch(`/Products/${id}`, { isActive: false })
             .then(Res => {
               this.Tabela.loading = true
               this.Tabela.tableData = []
